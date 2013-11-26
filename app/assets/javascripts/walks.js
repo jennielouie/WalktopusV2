@@ -3,6 +3,7 @@ var directionsService = new google.maps.DirectionsService();
 var streetView = new google.maps.StreetViewService();
 var walkMap;
 var markerArray;
+var instructionsArray;
 var panorama;
 var bearings = [];
 var geoStreet = [];
@@ -90,8 +91,10 @@ function mapRoute(){
 function makeMarkerArray (directionResult){
   var routeData = directionResult.routes[0].legs[0];
   markerArray = [];
+  instructionsArray = []
   // for each step, plot markers along polyline.  push to markerArray after start_location and followed by end_location
   markerArray.push(routeData.steps[0].start_location);
+  instructionsArray.push(routeData.steps[0].instructions);
   for (i = 0; i< routeData.steps.length; i++) {
     var path = routeData.steps[i].path;
     var markerSpacing = 200;
@@ -102,12 +105,16 @@ function makeMarkerArray (directionResult){
          strokeWeight: 2
     });
     var thisStepMarkerArray = stepArray.GetPointsAtDistance(markerSpacing);
-      for (j=0; j<thisStepMarkerArray.length -1; j++) {
+    var thisStepInstructions = routeData.steps[i].instructions;
+      for (j=0; j<thisStepMarkerArray.length; j++) {
         markerArray.push(thisStepMarkerArray[j]);
+        instructionsArray.push(thisStepInstructions);
       }
     markerArray.push(routeData.steps[i].end_location);
-  } //for loop
+    instructionsArray.push(routeData.steps[i].instructions);
 
+  } //for loop
+console.log(markerArray);
   plotMarkers(markerArray);
 }; //function makeMarkerArray
 
