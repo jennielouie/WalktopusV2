@@ -1,7 +1,7 @@
 // Global Variables
 var directionsService = new google.maps.DirectionsService();
 var streetView = new google.maps.StreetViewService();
-var mapVar;
+var walkMap;
 var markerArray;
 var panorama;
 var bearings = [];
@@ -17,10 +17,54 @@ function initialize(){
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     center: toronto
   }
-
-  mapVar = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+  var walkMapStyles = [
+  {
+    "featureType": "landscape.natural",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#efeee4" }
+    ]
+  },{
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#f0652f" },
+      { "weight": 1.2 }
+    ]
+  },{
+    "featureType": "road.arterial",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#f0652f" }
+    ]
+  },{
+    "featureType": "road.local",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#689aca" }
+    ]
+  },{
+    "featureType": "water",
+    "stylers": [
+      { "color": "#464646" }
+    ]
+  },{
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#b8b4c1" }
+    ]
+  },{
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      { "weight": 3.7 }
+    ]
+  }
+];
+  walkMap = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+  walkMap.setOptions({styles: walkMapStyles});
   panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"));
-  directionsDisplay.setMap(mapVar);
+  directionsDisplay.setMap(walkMap);
   directionsDisplay.setPanel(document.getElementById('directions_box'));
   // var walk_start = $('walk_start').val();
   // var walk_end = $('walk_end').val();
@@ -52,7 +96,7 @@ function makeMarkerArray (directionResult){
     var markerSpacing = 200;
     var stepArray = new google.maps.Polyline({
          path: path,
-         strokeColor: "#FF0000",
+         strokeColor: "#464646",
          strokeOpacity: 0.8,
          strokeWeight: 2
     });
@@ -72,7 +116,7 @@ function plotMarkers (markerArray){
   for (var i = 0; i < markerArray.length; i++){
     var marker = new google.maps.Marker({
       position: markerArray[i],
-      map: mapVar
+      map: walkMap
     }); //Marker
 
     // set bearing at each marker.  If the last marker, use same bearing as the previous marker.
@@ -84,7 +128,6 @@ function plotMarkers (markerArray){
     else {
       bearings[i] = bearings[i-1];
     }
-
 
 // Event listener for mouseover on marker; it triggers streetview for that marker, in the correct orientation
     google.maps.event.addListener(marker, 'mouseover', function(event){

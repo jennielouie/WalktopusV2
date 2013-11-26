@@ -9,8 +9,8 @@
   <h1>Walktopus</h1>
   <h2>Preview a New Walk</h2>
   <%= form_for @walk do  |f|  %>
+  <div class='row'>
   <%=f.label :start %> <br>
-
     <%= f.text_field :start, :placeholder =>"Starting from?" %>
     <br>
     <%= f.label :end %> <br>
@@ -18,7 +18,7 @@
     <br>
     <%= f.submit  "Show Preview" %>
 <% end %>
-<input type="submit" id="buttonGetWalk" class="button [radius round]" value="See your walk">
+
 </div>
 
 <!-- <form method = 'post' action = '/walks'>
