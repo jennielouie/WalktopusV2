@@ -91,6 +91,7 @@ function makeMarkerArray (directionResult){
   var routeData = directionResult.routes[0].legs[0];
   markerArray = [];
   // for each step, plot markers along polyline.  push to markerArray after start_location and followed by end_location
+  markerArray.push(routeData.steps[0].start_location);
   for (i = 0; i< routeData.steps.length; i++) {
     var path = routeData.steps[i].path;
     var markerSpacing = 200;
@@ -101,12 +102,12 @@ function makeMarkerArray (directionResult){
          strokeWeight: 2
     });
     var thisStepMarkerArray = stepArray.GetPointsAtDistance(markerSpacing);
-    markerArray.push(routeData.steps[i].start_location);
       for (j=0; j<thisStepMarkerArray.length -1; j++) {
         markerArray.push(thisStepMarkerArray[j]);
       }
     markerArray.push(routeData.steps[i].end_location);
   } //for loop
+
   plotMarkers(markerArray);
 }; //function makeMarkerArray
 
@@ -138,7 +139,6 @@ function plotMarkers (markerArray){
       });
       panorama.setVisible(true);
     }); //addListener
-
   }; //for loop
 }; //function plotMarkers
 
