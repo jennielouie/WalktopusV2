@@ -94,18 +94,24 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
 
 #   set bearing at each marker.  If the last marker, use same bearing as the previous marker.
 plotMarkers = (walkMap, markerArray, panorama)->
+  octopus = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
+  chicken = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-2/32/polenta-icon.png'
+  starfish = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/48/Pico-icon.png'
   for i in [0..markerArray.length-1]
-    marker = new google.maps.Marker({
-      position: markerArray[i],
-      map: walkMap,
-      # icon: 'http://icons.iconarchive.com/icons/visualpharm/icons8-metro-style/32/Tracks-Footprints-Right-footprint-icon.png'
-      icon: 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
-      # icon: 'http://icons.iconarchive.com/icons/imil/sea/16/octopus-icon.png'
-    })
+    if i==0
+      marker = new google.maps.Marker({
+        position: markerArray[0],
+        map: walkMap,
+        icon: starfish
+      })
+    else
+      marker = new google.maps.Marker({
+        position: markerArray[i],
+        map: walkMap,
+        icon: octopus
+      })
     marker.myIndex = i
-    console.log(markerArray)
     if i < markerArray.length-2
-      console.log(i)
       thisLatLng = markerArray[i]
       nextLatLng = markerArray[i+1]
       bearings[i] = getBearing(thisLatLng.lat(), thisLatLng.lng(), nextLatLng.lat(), nextLatLng.lng())
@@ -113,11 +119,17 @@ plotMarkers = (walkMap, markerArray, panorama)->
     else bearings[i] = bearings[i-1]
 
 
+
 # Event listener for mouseover on marker; it triggers streetview for that marker, in the correct orientation
     google.maps.event.addListener marker, 'mouseover', (event) ->
       streetView.getPanoramaByLocation(event.latLng, 50, showStreetView)
       panorama.setPov({ heading: bearings[this.myIndex], pitch: 0})
       panorama.setVisible(true)
+      this.setIcon(chicken)
+
+    google.maps.event.addListener marker, 'mouseout', (event) ->
+      if this.myIndex == 0 then this.setIcon(starfish)
+      else this.setIcon(octopus)
 
 showStreetView = (data, status)->
   if status == google.maps.StreetViewStatus.OK then panorama.setPano(data.location.pano) else alert 'Sorry, no views are currently available for this location.'
