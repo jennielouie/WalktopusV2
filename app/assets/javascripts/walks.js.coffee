@@ -63,11 +63,11 @@ initialize = ()->
   panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"))
   directionsDisplay.setMap(walkMap)
   directionsDisplay.setPanel(document.getElementById('directions_box'))
-#   mapRoute()
+  mapRoute(walkMap, directionsDisplay)
 
 
 # # mapRoute is called by function initialize, makes request for directions, then calls showMarkers function to add markers
-# mapRoute = ()->
+mapRoute = (walkMap, directionsDisplay)->
   request = {
     origin: walk_start,
     destination: walk_end,
@@ -77,19 +77,18 @@ initialize = ()->
     if status == google.maps.DirectionsStatus.OK
       directionsDisplay.setDirections(response)
       console.log(response)
-      makeMarkerArray(response))
+      makeMarkerArray(walkMap, response))
 
 
 # For each step, plot markers along polyline.  push to markerArray after start_location and followed by end_location
-makeMarkerArray = (directionResult)->
+makeMarkerArray = (walkMap, directionResult)->
   routeData = directionResult.routes[0].legs[0]
   markerArray = []
   instructionsArray = []
   markerArray.push(routeData.steps[0].start_location)
   instructionsArray.push(routeData.steps[0].instructions)
-  for i in [0..routeData.steps.length]
+  for i in [0..(routeData.steps.length-1)]
     pathw = routeData.steps[i].path
-    console.log('pathw is ' + routeData.steps[i].path)
     console.log('i is ' + i)
     markerSpacing = 200
     stepArray = new google.maps.Polyline({
@@ -99,25 +98,35 @@ makeMarkerArray = (directionResult)->
       strokeWeight: 2})
     thisStepMarkerArray = stepArray.GetPointsAtDistance(markerSpacing)
     thisStepInstructions = routeData.steps[i].instructions
-    for j in [0..thisStepMarkerArray.length]
-      markerArray.push(thisStepMarkerArray[j])
-      instructionsArray.push(thisStepInstructions)
+    if thisStepMarkerArray.length>0
+      for j in [0..(thisStepMarkerArray.length-1)]
+        console.log('i is '+i + ' j is ' +j)
+        console.log(thisStepMarkerArray[j].lat())
+        console.log(thisStepMarkerArray[j].lng())
+        markerArray.push(thisStepMarkerArray[j])
+        instructionsArray.push(thisStepInstructions)
     markerArray.push(routeData.steps[i].end_location)
     instructionsArray.push(routeData.steps[i].instructions)
-  plotMarkers(markerArray)
+  console.log('done with makeMarker')
+  plotMarkers(walkMap, markerArray)
 
-plotMarkers = (markerArray)->
+plotMarkers = (walkMap, markerArray)->
 # >>>>>>>>>>>>>>>>>>>>set icons, special start and end icons
-  for i in [0..markerArray.length]
+  for i in [0..markerArray.length-1]
     marker = new google.maps.Marker({
       position: markerArray[i],
       map: walkMap
     })
 #   set bearing at each marker.  If the last marker, use same bearing as the previous marker.
-    marker.myIndex = m
-    if m < markerArray.length-1 then bearings[m] = getBearing(markerArray[m]['ob'], markerArray[m]['pb'], markerArray[m+1]['ob'], markerArray[m+1]['pb'])
+    marker.myIndex = i
+    console.log(markerArray)
+    if i < markerArray.length-2
+      console.log(i)
+      thisLatLng = markerArray[i]
+      nextLatLng = markerArray[i+1]
+      bearings[i] = getBearing(thisLatLng.lat(), thisLatLng.lng(), nextLatLng.lat(), nextLatLng.lng())
     # If last marker, set bearing in same direction as penultimate marker
-    else bearings[m] = bearings[m-1]
+    else bearings[i] = bearings[i-1]
 
 
 # Event listener for mouseover on marker; it triggers streetview for that marker, in the correct orientation
