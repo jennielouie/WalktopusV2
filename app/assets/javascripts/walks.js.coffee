@@ -5,20 +5,21 @@ streetView = new google.maps.StreetViewService()
 # markerArray
 # instructionsArray
 # panorama
-# bearings = []
-# geoStreet = []
-class window.walkMap
-  constructor: ->
-class window.markerArray
-  constructor: ->
-class window.instructionsArray
-  constructor: ->
-class window.panorama
-  constructor: ->
-class window.bearings
-  constructor: ->
-class window.geoStreet
-  constructor: ->
+bearings = []
+geoStreet = []
+panorama = 0
+# class window.walkMap
+#   constructor: ->
+# class window.markerArray
+#   constructor: ->
+# class window.instructionsArray
+#   constructor: ->
+# class window.panorama
+#   constructor: ->
+# class window.bearings
+#   constructor: ->
+# class window.geoStreet
+#   constructor: ->
 # class window.directionsDisplay
 #   constructor: ->
 
@@ -63,11 +64,11 @@ initialize = ()->
   panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"))
   directionsDisplay.setMap(walkMap)
   directionsDisplay.setPanel(document.getElementById('directions_box'))
-  mapRoute(walkMap, directionsDisplay)
+  mapRoute(walkMap, directionsDisplay, panorama)
 
 
 # # mapRoute is called by function initialize, makes request for directions, then calls showMarkers function to add markers
-mapRoute = (walkMap, directionsDisplay)->
+mapRoute = (walkMap, directionsDisplay, panorama)->
   request = {
     origin: walk_start,
     destination: walk_end,
@@ -77,11 +78,11 @@ mapRoute = (walkMap, directionsDisplay)->
     if status == google.maps.DirectionsStatus.OK
       directionsDisplay.setDirections(response)
       console.log(response)
-      makeMarkerArray(walkMap, response))
+      makeMarkerArray(walkMap, response, panorama))
 
 
 # For each step, plot markers along polyline.  push to markerArray after start_location and followed by end_location
-makeMarkerArray = (walkMap, directionResult)->
+makeMarkerArray = (walkMap, directionResult, panorama)->
   routeData = directionResult.routes[0].legs[0]
   markerArray = []
   instructionsArray = []
@@ -108,9 +109,9 @@ makeMarkerArray = (walkMap, directionResult)->
     markerArray.push(routeData.steps[i].end_location)
     instructionsArray.push(routeData.steps[i].instructions)
   console.log('done with makeMarker')
-  plotMarkers(walkMap, markerArray)
+  plotMarkers(walkMap, markerArray, panorama)
 
-plotMarkers = (walkMap, markerArray)->
+plotMarkers = (walkMap, markerArray, panorama)->
 # >>>>>>>>>>>>>>>>>>>>set icons, special start and end icons
   for i in [0..markerArray.length-1]
     marker = new google.maps.Marker({
