@@ -105,6 +105,7 @@ plotMarkers = (walkMap, markerArray, panorama)->
         map: walkMap,
         icon: starfish
       })
+      lastSelectedMarker = marker
     else
       marker = new google.maps.Marker({
         position: markerArray[i],
@@ -122,15 +123,21 @@ plotMarkers = (walkMap, markerArray, panorama)->
 
 
 # Event listener for mouseover on marker; it triggers streetview for that marker, in the correct orientation
-    google.maps.event.addListener marker, 'mouseover', (event) ->
+    google.maps.event.addListener marker, 'click', (event) ->
       streetView.getPanoramaByLocation(event.latLng, 50, showStreetView)
+      if lastSelectedMarker.myIndex == 0 then lastSelectedMarker.setIcon(starfish)
+      else lastSelectedMarker.setIcon(octopus)
+      console.log(this.myIndex)
       panorama.setPov({ heading: bearings[this.myIndex], pitch: 0})
       panorama.setVisible(true)
       this.setIcon(chicken)
+      lastSelectedMarker = this
+      console.log(this.myIndex)
 
-    google.maps.event.addListener marker, 'mouseout', (event) ->
-      if this.myIndex == 0 then this.setIcon(starfish)
-      else this.setIcon(octopus)
+#>>>>>USE THIS.MYINDEX TO PRINT INSTRUCTIONS IN DIRECTIONS
+    # google.maps.event.addListener marker, 'mouseout', (event) ->
+    #   if this.myIndex == 0 then this.setIcon(starfish)
+    #   else this.setIcon(octopus)
 
 showStreetView = (data, status)->
   if status == google.maps.StreetViewStatus.OK then panorama.setPano(data.location.pano) else alert 'Sorry, no views are currently available for this location.'
