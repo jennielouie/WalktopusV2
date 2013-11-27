@@ -3,6 +3,7 @@ var walk_start="<%=@walk.start%>";
 var walk_end="<%=@walk.end%>";
 </script>
 
+<div class="contain-to-grid">
 <nav class="top-bar" data-topbar>
   <ul class="title-area">
     <li class="name">
@@ -14,7 +15,7 @@ var walk_end="<%=@walk.end%>";
     <!-- Right Nav Section -->
     <ul class="right">
       <li class="active"><a href="#">Main Streetview/Map/Directions View</a></li>
-      <li class="has-dropdown">
+      <li class="has-dropdown" "toggle-topbar menu-icon">
         <a href="#">View Options</a>
         <ul class="dropdown">
           <li><a href="#">Streetview with Directions</a></li>
@@ -26,14 +27,18 @@ var walk_end="<%=@walk.end%>";
 
   </section>
 </nav>
+</div>
+
 
 <div id="walk_show" class="row">
-<h1>Hover over map markers to see your walk</h1>
+<h4>Hover over map markers to see your walk</h4>
 </div>
-<div class="row")
-<div class="small-12 large-6 columns" id="map-canvas"> </div>
-<div class="small-12 large-6 columns" id="pano"></div>
+<div class="row">
+<div class="large-6 large-push-6 columns" id="map-canvas" style='height:300px'> </div>
+<div class="large-6 large-pull-6 columns" id="pano" style='height:300px'></div>
 </div>
-<div id="directions_box"></div>
+<div class="row">
+<div class="small-12 large-6 columns" id="directions_box" style='height:100px'></div>
+</div>
 
 </div>
