@@ -4,6 +4,7 @@ streetView = new google.maps.StreetViewService()
 bearings = []
 geoStreet = []
 panorama = 0
+walkMap = 0
 
 # Initialize map and displays, then calls mapRoute function
 initialize = ()->
@@ -148,6 +149,10 @@ convertToRad = (value)->
   value * Math.PI/180
 
 google.maps.event.addDomListener(window, 'load', initialize)
+google.maps.event.addDomListener window, "resize", (event) ->
+  center = walkMap.getCenter()
+  google.maps.event.trigger(walkMap, "resize")
+  walkMap.setCenter(center)
+  console.log('resized')
 
-google.maps.event.trigger(walkMap, "resize")
 
