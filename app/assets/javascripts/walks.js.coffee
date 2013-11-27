@@ -1,32 +1,13 @@
 # // Global Variables
 directionsService = new google.maps.DirectionsService()
 streetView = new google.maps.StreetViewService()
-# walkMap
-# markerArray
-# instructionsArray
-# panorama
 bearings = []
 geoStreet = []
 panorama = 0
-# class window.walkMap
-#   constructor: ->
-# class window.markerArray
-#   constructor: ->
-# class window.instructionsArray
-#   constructor: ->
-# class window.panorama
-#   constructor: ->
-# class window.bearings
-#   constructor: ->
-# class window.geoStreet
-#   constructor: ->
-# class window.directionsDisplay
-#   constructor: ->
-
 
 # Initialize map and displays, then calls mapRoute function
 initialize = ()->
-  directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true})
+  directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, polylineOptions: {strokeColor: '#464646'}})
   toronto = new google.maps.LatLng(43.652527, -79.381961)
   mapOptions = {
     zoom: 8,
@@ -111,14 +92,16 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
   console.log('done with makeMarker')
   plotMarkers(walkMap, markerArray, panorama)
 
+#   set bearing at each marker.  If the last marker, use same bearing as the previous marker.
 plotMarkers = (walkMap, markerArray, panorama)->
-# >>>>>>>>>>>>>>>>>>>>set icons, special start and end icons
   for i in [0..markerArray.length-1]
     marker = new google.maps.Marker({
       position: markerArray[i],
-      map: walkMap
+      map: walkMap,
+      # icon: 'http://icons.iconarchive.com/icons/visualpharm/icons8-metro-style/32/Tracks-Footprints-Right-footprint-icon.png'
+      icon: 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
+      # icon: 'http://icons.iconarchive.com/icons/imil/sea/16/octopus-icon.png'
     })
-#   set bearing at each marker.  If the last marker, use same bearing as the previous marker.
     marker.myIndex = i
     console.log(markerArray)
     if i < markerArray.length-2
@@ -136,7 +119,6 @@ plotMarkers = (walkMap, markerArray, panorama)->
       panorama.setPov({ heading: bearings[this.myIndex], pitch: 0})
       panorama.setVisible(true)
 
-
 showStreetView = (data, status)->
   if status == google.maps.StreetViewStatus.OK then panorama.setPano(data.location.pano) else alert 'Sorry, no views are currently available for this location.'
 
@@ -152,7 +134,6 @@ getBearing = (lt1, ln1, lt2, ln2)->
 
 convertToRad = (value)->
   value * Math.PI/180
-
 
 google.maps.event.addDomListener(window, 'load', initialize)
 
