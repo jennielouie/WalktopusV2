@@ -6,15 +6,20 @@ var markerArray;
 var instructionsArray;
 var panorama;
 var bearings = [];
-var geoStreet = [];
+var markerHandles =[];
+var lastSelectedMarker =0;
+var currentIndex =0;
+var currentMarker =0;
+var octopus = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png';
+var chicken = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-2/32/polenta-icon.png';
+var starfish = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/48/Pico-icon.png';
 
 // Initialize map and displays, then calls mapRoute function
 function initialize(){
-  directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+  directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, polylineOptions: {strokeColor: '#464646'}});
   var toronto = new google.maps.LatLng(43.652527, -79.381961);
-//>>>>>>>>>>>>>>>>>>>add style to map
   var mapOptions={
-    zoom: 8,
+    zoom: 10,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     center: toronto
   }
@@ -67,12 +72,10 @@ function initialize(){
   panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"));
   directionsDisplay.setMap(walkMap);
   directionsDisplay.setPanel(document.getElementById('directions_box'));
-  // var walk_start = $('walk_start').val();
-  // var walk_end = $('walk_end').val();
   mapRoute();
-} //function initialize
+}; //function initialize
 
-// mapRoute is called by function initialize, makes request for directions, then calls showMarkers function to add markers
+// mapRoute is called by function initialize, makes request for directions, then calls makeMarkerArray function to add markers
 function mapRoute(){
   var request ={
     origin: walk_start,
@@ -82,71 +85,84 @@ function mapRoute(){
   directionsService.route(request, function(response, status){
     if (status == google.maps.DirectionsStatus.OK){
       directionsDisplay.setDirections(response);
+      $('#walk_show').append('<h3> Start (star): ' + response.routes[0].legs[0].start_address + '</br>End: ' + response.routes[0].legs[0].end_address + '</br>Click on an octopus to see the street view</h3>');
       makeMarkerArray(response);
     }
   }); //directionsService.route
 }; //function mapRoute
 
-//makeMarkerArray is called by function calcRoute, renders polyline along route path, sets marker locations at intervals set by user along polyline
+//For each step, plot markers along polyline.  Push each marker to markerArray after start_location, and then follow all markers by end_location
 function makeMarkerArray (directionResult){
   var routeData = directionResult.routes[0].legs[0];
   markerArray = [];
   instructionsArray = []
-  // for each step, plot markers along polyline.  push to markerArray after start_location and followed by end_location
   markerArray.push(routeData.steps[0].start_location);
   instructionsArray.push(routeData.steps[0].instructions);
   for (i = 0; i< routeData.steps.length; i++) {
-    var path = routeData.steps[i].path;
+    var pathw = routeData.steps[i].path;
     var markerSpacing = 200;
     var stepArray = new google.maps.Polyline({
-         path: path,
+         path: pathw,
          strokeColor: "#464646",
          strokeOpacity: 0.8,
          strokeWeight: 2
     });
     var thisStepMarkerArray = stepArray.GetPointsAtDistance(markerSpacing);
     var thisStepInstructions = routeData.steps[i].instructions;
-      for (j=0; j<thisStepMarkerArray.length; j++) {
+      if (thisStepMarkerArray.length>0) {
+        for (j=0; j<thisStepMarkerArray.length; j++) {
         markerArray.push(thisStepMarkerArray[j]);
         instructionsArray.push(thisStepInstructions);
+        }
       }
-    markerArray.push(routeData.steps[i].end_location);
-    instructionsArray.push(routeData.steps[i].instructions);
-
+      else {
+        markerArray.push(routeData.steps[i].end_location);
+        instructionsArray.push(routeData.steps[i].instructions);
+      }
   } //for loop
-console.log(markerArray);
+
   plotMarkers(markerArray);
 }; //function makeMarkerArray
 
-//plotMarkers plots markers on map and sets bearing for street views to point to the next marker, and adds event listener for mouseover to view streetview
+//Plot markers on map and set bearing at each marker using getBearing (which uses convertToRad).  If the last marker, use same bearing as the previous marker
 function plotMarkers (markerArray){
-//>>>>>>>>>>>>>>>>>>>>set icons, special start and end icons
-  for (var i = 0; i < markerArray.length; i++){
-    var marker = new google.maps.Marker({
-      position: markerArray[i],
-      map: walkMap
-    }); //Marker
 
+  for (var i = 0; i < markerArray.length; i++){
+    if (i==0) {
+      var marker = new google.maps.Marker({
+        position: markerArray[i],
+        map: walkMap,
+        icon: starfish
+      }); //Marker
+    }
+    else {
+      marker = new google.maps.Marker({
+        position: markerArray[i],
+        map: walkMap,
+        icon: octopus
+      });
+    }
     // set bearing at each marker.  If the last marker, use same bearing as the previous marker.
     marker.myIndex = i;
-    if (i < markerArray.length-1){
-      bearings[i] = getBearing(markerArray[i]['ob'], markerArray[i]['pb'], markerArray[i+1]['ob'], markerArray[i+1]['pb']);
+    markerHandles.push(marker);
+    if (i < markerArray.length-2){
+      var thisLatLng = markerArray[i];
+      var nextLatLng = markerArray[i+1];
+      bearings[i] = getBearing(thisLatLng.lat(), thisLatLng.lng(), nextLatLng.lat(), nextLatLng.lng());
     }
     // If last marker, set bearing in same direction as penultimate marker
     else {
       bearings[i] = bearings[i-1];
     }
-
-// Event listener for mouseover on marker; it triggers streetview for that marker, in the correct orientation
-    google.maps.event.addListener(marker, 'mouseover', function(event){
-      streetView.getPanoramaByLocation(event.latLng, 50, showStreetView);
-      panorama.setPov({
-        heading: bearings[this.myIndex],
-        pitch: 0
-      });
-      panorama.setVisible(true);
-    }); //addListener
   }; //for loop
+// Show streetview at first marker, and corresponding directions
+  streetView.getPanoramaByLocation(markerArray[0], 50, showStreetView);
+  panorama.setPov({ heading: bearings[0], pitch: 0});
+  panorama.setVisible(true);
+  markerHandles[0].setIcon(chicken);
+  lastSelectedMarker = markerHandles[0];
+  $('#directions_box').empty();
+  $('#directions_box').append('<h3>Directions:</h3></br><h3>' + instructionsArray[0] + '</h3>');
 }; //function plotMarkers
 
 
@@ -160,7 +176,7 @@ function showStreetView(data, status){
   else {alert('Sorry, no views are currently available for this location.');}
 }; //function showStreetView
 
-// getBearing is called by function showMarkers, calculates direction to next marker, in order to orient streetview point-of-view in direction of the walk
+// getBearing is called by function plotMarkers, calculates direction to next marker, in order to orient streetview point-of-view in direction of the walk
 function getBearing(lt1, ln1, lt2, ln2) {
   var lat1 = convertToRad(lt1);
   var lon1 = convertToRad(ln1);
@@ -172,9 +188,17 @@ function getBearing(lt1, ln1, lt2, ln2) {
   return parseFloat(angle.toFixed(1));
 }; //function getBearing
 
-// convertTsoRad is called by function getBearing, converts degrees to radians, used for bearing calculation
+// convertToRad is called by function getBearing, converts degrees to radians, used for bearing calculation
 function convertToRad(Value){
   return Value * Math.PI/180;
 } //function convertToRad
 
+// Add event listeners for window load and resize
 google.maps.event.addDomListener(window, 'load', initialize);
+google.maps.event.addDomListener (window, "resize", function(event){
+  center = walkMap.getCenter();
+  google.maps.event.trigger(walkMap, "resize");
+  google.maps.event.trigger(panorama, "resize");
+  walkMap.setCenter(center);
+  console.log('resized');
+});
