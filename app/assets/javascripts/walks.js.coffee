@@ -59,7 +59,7 @@ mapRoute = (walkMap, directionsDisplay, panorama)->
   directionsService.route(request, (response, status) ->
     if status == google.maps.DirectionsStatus.OK
       directionsDisplay.setDirections(response)
-      $('#walk_show').append('<h3> Start (star): ' + response.routes[0].legs[0].start_address + '</br>End: ' + response.routes[0].legs[0].end_address + '</h3>')
+      $('#walk_show').append('<h3> Start (star): ' + response.routes[0].legs[0].start_address + '</br>End: ' + response.routes[0].legs[0].end_address + '</br>Click on an octopus to see the street view</h3>')
       console.log(response)
       makeMarkerArray(walkMap, response, panorama))
 
