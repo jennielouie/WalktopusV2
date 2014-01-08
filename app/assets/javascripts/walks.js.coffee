@@ -91,6 +91,8 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
     else
     markerArray.push(routeData.steps[i].end_location)
     instructionsArray.push(routeData.steps[i+1].instructions)
+  markerArray.push(routeData.end_location)
+  instructionsArray.push('Arrive at ' + routeData.end_address)
   plotMarkers(walkMap, markerArray, instructionsArray, panorama)
 
 
