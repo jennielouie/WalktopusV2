@@ -14,11 +14,10 @@
  *= require_tree .
  */
 html {height: 100%}
-    body {height: 100%; margin: 5px; padding: 5px}
+body {height: 100%; margin: 5px; padding: 5px}
 
-    .gmnoprint img {
-    max-width: 1000px;
-}
+  .gmnoprint img {
+    max-width: 1000px}
 /*    h1 {
         text-align: center;
         font-size: 42px
@@ -34,7 +33,7 @@ html {height: 100%}
     {height: 20%; width: 49%; float: right; background-color: white; opacity: 0.9;overflow:scroll}
 
     #directions_box
-    {height: 20%; width: 49%; font-size: 14px; background-color: white; opacity: 0.9; float: left; ove*/rflow:scroll}
+    {height: 20%; width: 49%; font-size: 14px; background-color: white; opacity: 0.9; float: left; overflow:scroll}
 /*
     #walk_show
     {height: 15%; width: 100%; margin-left:auto;
