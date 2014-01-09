@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.15'
 gem 'pg'
 gem 'foundation-rails'
-gem 'sqlite3'
 gem 'jquery-rails'
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
