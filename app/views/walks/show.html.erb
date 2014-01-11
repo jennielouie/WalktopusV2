@@ -3,41 +3,37 @@ var walk_start="<%=@walk.start%>";
 var walk_end="<%=@walk.end%>";
 </script>
 
-<div class="contain-to-grid">
 <nav class="top-bar" data-topbar>
   <ul class="title-area">
     <li class="name">
-      <h1><a href="#">Walktopus</a></h1>
+      <h1><a href="#">Walktopus V2</a></h1>
     </li>
   </ul>
 
   <section class="top-bar-section">
     <!-- Right Nav Section -->
     <ul class="right">
-      <li class="active"><a href="/">Map Another Walk</a></li>
-      <!-- <li class="has-dropdown" "toggle-topbar menu-icon">
-        <a href="/">Map Another Walk</a>
+      <li class="active"><a href="#">Main Streetview/Map/Directions View</a></li>
+      <li class="has-dropdown">
+        <a href="#">View Options</a>
         <ul class="dropdown">
           <li><a href="#">Streetview with Directions</a></li>
           <li><a href="#">Streetview slideshow</a></li>
 
         </ul>
-      </li> -->
+      </li>
     </ul>
 
   </section>
 </nav>
-</div>
-
 
 <div id="walk_show" class="row">
+<h1>Hover over map markers to see your walk</h1>
 </div>
-<div class="row">
-<div class="large-6 large-push-6 columns" id="map-canvas" style='height:400px'> </div>
-<div class="large-6 large-pull-6 columns" id="pano" style='height:400px'></div>
+<div class="row")
+<div class="small-12 large-6 columns" id="map-canvas"> </div>
+<div class="small-12 large-6 columns" id="pano"></div>
 </div>
-<div class="row">
-<div class="large-12 columns" id="directions_box" style='height:100px'><h3>Directions:</h3></br></div>
-</div>
+<div id="directions_box"></div>
 
 </div>
