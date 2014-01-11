@@ -19,7 +19,9 @@ html {height: 100%}
         text-align: center;
         font-size: 42px
     }
-
+.gmnoprint img {
+    max-width: 1000px;
+}
     #map-canvas
     {height: 55%; width: 49%; float: left}
 
