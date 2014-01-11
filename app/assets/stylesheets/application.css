@@ -34,6 +34,7 @@ html {height: 100%}
     {height: 20%; width: 49%; float: right; background-color: white; opacity: 0.9;overflow:scroll}
 
     #directions_box
+
     {height: 20%; width: 49%; font-size: 14px; background-color: white; opacity: 0.9; float: left; overflow:scroll}
 
     #walk_show
