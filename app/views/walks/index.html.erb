@@ -1,0 +1,44 @@
+<nav class="top-bar" data-topbar>
+  <ul class="title-area">
+    <li class="name">
+      <h1><a href="/walks/new">Walktopus</a></h1>
+    </li>
+  </ul>
+
+  <section class="top-bar-section">
+    <!-- Right Nav Section -->
+    <ul class="right">
+      <li class="has-dropdown">
+        <a href="#">Options</a>
+        <ul class="dropdown">
+          <li><a href="/walks/new">Preview a New Route</a></li>
+          <!-- <li><a href="/walks">See All Previewed Walks</a></li> -->
+        </ul>
+      </li>
+    </ul>
+  </section>
+</nav>
+
+<div class="row" id="indexTitle">
+  <div class="small-8 small-offset-2 centered columns">
+    <h3>Walktopus Walking Routes</h3>
+  </div>
+</div>
+
+<div class='small-8 small-offset-2 centered columns' id="walk_summary">
+  <table>
+    <thead>
+      <tr>
+        <th>Click on a Walk to See the Sights!</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @walks.each do |walk| %>
+      <tr>
+        <td><a href="walks/<%=walk.id %>">Walk #<%=walk.id%>: From <%=walk.start%> to <%=walk.end%></a></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
