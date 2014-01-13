@@ -160,5 +160,5 @@ google.maps.event.addDomListener window, "resize", (event) ->
   google.maps.event.trigger(walkMap, "resize")
   google.maps.event.trigger(panorama, "resize")
   walkMap.setCenter(center)
-  console.log('resized')
+
 
