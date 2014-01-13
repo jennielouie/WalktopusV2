@@ -1,20 +1,28 @@
 </br>
 </br>
-</br>
-</br>
-</br>
-<div><h1>Walktopus </h1></div>
+<div class="row">
+  <div class="small-6 small-offset-3 centered columns">
+    <h1>Walktopus</h1></br>
+    <h3 style='text-align:center'>Preview Your Walking Route</h3>
+    </br></br>
+  </div>
+</div>
 
-<div id="walk_form">
-  <h3>See A Slideshow of Your Walking Route</h3>
-  <%= form_for @walk do  |f|  %>
-    <div class='row'>
-    <%=f.label :start, "Starting from where?" %> <br>
-    <%= f.text_field :start, :placeholder =>"Enter origin address or landmark, e.g.414 Brannan St., SF; or Louvre" %>
-    <br>
-    <%= f.label :end, "Ending where?" %> <br>
-    <%=f.text_field :end, :placeholder => "Enter destination address or landmark, e.g. 1 Post Street, SF; or Arc de Triomphe" %>
+<!-- <div class="row">
+  <div class="small-8 small-offset-4 centered columns"></div>
+</div> -->
+
+<div class="row">
+  <div class='small-8 small-offset-2 columns' id="walk_form">
+    <%= form_for @walk do  |f|  %>
+
+      <%=f.label :start, "Starting from where?" %> <br>
+      <%= f.text_field :start, :placeholder =>"Enter origin address or landmark, e.g. 414 Brannan St., SF; or Louvre" %>
       <br>
-    <%= f.submit "Show Me My Walk", :class =>'large button' %>
-  <% end %>
+      <%= f.label :end, "Ending where?" %> <br>
+      <%=f.text_field :end, :placeholder => "Enter destination address or landmark, e.g. 1 Post St, SF; or Arc de Triomphe" %>
+        <br>
+      <%= f.submit "Show Me My Walk", :class =>'small button' %>
+    <% end %>
+  </div>
 </div>

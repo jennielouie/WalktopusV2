@@ -59,7 +59,7 @@ mapRoute = (walkMap, directionsDisplay, panorama)->
   directionsService.route(request, (response, status) ->
     if status == google.maps.DirectionsStatus.OK
       directionsDisplay.setDirections(response)
-      $('#walk_show').append('<p> Start (star): ' + response.routes[0].legs[0].start_address + '.  End: ' + response.routes[0].legs[0].end_address + '</p>')
+      $('#walk_show').append('Start (star): ' + response.routes[0].legs[0].start_address + '.  End: ' + response.routes[0].legs[0].end_address)
       console.log(response)
       makeMarkerArray(walkMap, response, panorama))
 
@@ -135,7 +135,7 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
       this.setIcon(chicken)
       lastSelectedMarker = this
       $('#directions_box').empty()
-      $('#directions_box').append('<h3 class="redText">This Step: ' + instructionsArray[this.myIndex] + '</h3>')
+      $('#directions_box').append('<h4 class="redText">This Step: ' + instructionsArray[this.myIndex] + '</h4>')
 
 
 showStreetView = (data, status)->
