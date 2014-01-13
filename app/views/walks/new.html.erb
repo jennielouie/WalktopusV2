@@ -3,56 +3,18 @@
 </br>
 </br>
 </br>
-<div><h1>Walktopus V2</h1></div>
+<div><h1>Walktopus </h1></div>
 
 <div id="walk_form">
-  <h2>Preview a New Walk</h2>
+  <h3>See A Slideshow of Your Walking Route</h3>
   <%= form_for @walk do  |f|  %>
-  <div class='row'>
-  <%=f.label :start %> <br>
-    <%= f.text_field :start, :placeholder =>"Starting from?" %>
+    <div class='row'>
+    <%=f.label :start, "Starting from where?" %> <br>
+    <%= f.text_field :start, :placeholder =>"Enter origin address or landmark, e.g.414 Brannan St., SF; or Louvre" %>
     <br>
-    <%= f.label :end %> <br>
-    <%=f.text_field :end, :placeholder => "Ending where?" %>
-    <br>
-    <%= f.submit  "Show Preview" %>
-<% end %>
-
+    <%= f.label :end, "Ending where?" %> <br>
+    <%=f.text_field :end, :placeholder => "Enter destination address or landmark, e.g. 1 Post Street, SF; or Arc de Triomphe" %>
+      <br>
+    <%= f.submit "Show Me My Walk", :class =>'large button' %>
+  <% end %>
 </div>
-
-<!-- <form method = 'post' action = '/walks'>
-  <div class="row">
-    <div class="large-12 columns">
-      <label>Enter starting location below</label>
-      <input type="text" id= "start" name="start" placeholder="e.g. 123 Bob street; Market and Union" />
-    </div>
-  </div>
-  <div class="row">
-    <div class="large-12 columns">
-      <label>Enter final destination below</label>
-      <input type="text" id= "end" name="end" placeholder="53 Chenery Street, SF" />
-    </div>
-
-  </div>
-  <div class="row">
-    <div class="large-4 columns">
-      <label>Street View Marker Intervals (need to redefine, these are foods):</label>
-      <select>
-        <option value="macaroni">Mac and Cheese</option>
-        <option value="poutine">Poutine</option>
-        <option value="donut">Donut</option>
-        <option value="ovaltine">Ovaltine</option>
-      </select>
-
-    </div>
-  </div>
-  <div class="row">
-    <div class="large-6 columns">
-      <label>Units of Measure</label>
-      <input type="radio" name="metric" value="Metric" id="metric"><label for="metric">Metric</label>
-      <input type="radio" name="imperial" value="Imperial" id="imperial"><label for="imperial">Imperial</label>
-    </div>
-
-    <input type="submit" id="buttonGetWalk" class="button [radius round]" value="See your walk">
-  </div>
-</form> -->

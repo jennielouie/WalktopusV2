@@ -59,7 +59,7 @@ mapRoute = (walkMap, directionsDisplay, panorama)->
   directionsService.route(request, (response, status) ->
     if status == google.maps.DirectionsStatus.OK
       directionsDisplay.setDirections(response)
-      $('#walk_show').append('<h4> Start (star): ' + response.routes[0].legs[0].start_address + '</br>End: ' + response.routes[0].legs[0].end_address + '</br>Click on an octopus to see the street view</h4>')
+      $('#walk_show').append('<p> Start (star): ' + response.routes[0].legs[0].start_address + '</br>End: ' + response.routes[0].legs[0].end_address + '</br>Click on an octopus to see the street view</p>')
       console.log(response)
       makeMarkerArray(walkMap, response, panorama))
 
@@ -125,7 +125,7 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
 
 
 
-# Event listener for mouseover on marker; it triggers streetview for that marker, in the correct orientation
+# Event listener for click on marker; it triggers streetview for that marker, in the correct orientation
     google.maps.event.addListener marker, 'click', (event) ->
       streetView.getPanoramaByLocation(event.latLng, 50, showStreetView)
       if lastSelectedMarker.myIndex == 0 then lastSelectedMarker.setIcon(starfish)
