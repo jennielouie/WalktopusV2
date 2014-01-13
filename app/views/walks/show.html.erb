@@ -25,13 +25,18 @@ var walk_end="<%=@walk.end%>";
   </section>
 </nav>
 
-<div id="walk_show" class="row">
-  <h3>Click on a marker to see streetview from that point along your route</h3>
+<div class="row">
+  <div class="small-12 columns" id="walk_show">
+    <p class='redText'>Click on a marker to see streetview from that point along your route</p>
+  </div>
 </div>
-<!-- <div class="row") -->
-  <div class="small-12 large-6 columns" id="map-canvas"> </div>
-  <div class="small-12 large-6 columns" id="pano"></div>
-</div>
-<div id="directions_box"></div>
-
+<!-- <div class="row"> -->
+<div class="large-1 columns"></div>
+  <div class="large-5 large-offset-1 small-10 small-offset-1 columns" id="map-canvas">Map Canvas</div>
+  <div class="large-5 large-offset-0 small-10 small-offset-1 columns" id="pano">Panorama</div>
+<!-- </div>-->
+<!-- <div class="row"> -->
+  <div class="large-1 columns"></div>
+    <div class="large-5 large-offset-1 small-5 small-offset-1 columns" id="route_box"></div>
+  <div class="large-5 small-5 columns" id="directions_box"></div>
 <!-- </div> -->
