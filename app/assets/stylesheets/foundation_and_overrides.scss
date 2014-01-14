@@ -3,7 +3,7 @@
 //
 
 // Uncomment to use rem-calc() in your settings
-// @import "foundation/functions";
+ @import "foundation/functions";
 
 // $experimental: true;
 
@@ -13,7 +13,7 @@
 // Since the typical default browser font-size is 16px, that makes the calculation for grid size.
 // If you want your base font-size to be different and not have it affect the grid breakpoints,
 // set $rem-base to $base-font-size and make sure $base-font-size is a px value.
-// $base-font-size: 100%;
+$base-font-size: 120%;
 
 // The $base-line-height is 100% while $base-font-size is 150%
 // $base-line-height: 150%;
@@ -35,7 +35,7 @@
 // $total-columns: 12;
 
 // We use these to control various global styles
-// $body-bg: #fff;
+$body-bg: #efeee4;
 // $body-font-color: #222;
 // $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 // $body-font-weight: normal;
@@ -927,7 +927,7 @@
 // $include-html-top-bar-classes: $include-html-classes;
 
 // Background color for the top bar
-// $topbar-bg-color: #689ACA;
+$topbar-bg-color: #f0652f;
 // $topbar-bg: $topbar-bg-color;
 
 // Height and margin
