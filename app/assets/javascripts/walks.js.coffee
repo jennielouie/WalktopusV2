@@ -59,8 +59,8 @@ mapRoute = (walkMap, directionsDisplay, panorama)->
   directionsService.route(request, (response, status) ->
     if status == google.maps.DirectionsStatus.OK
       directionsDisplay.setDirections(response)
-      $('#walk_show').append('Start (star): ' + response.routes[0].legs[0].start_address + '.  End: ' + response.routes[0].legs[0].end_address)
-      console.log(response)
+      $('#walk_show').append('<p>Start (star): ' + response.routes[0].legs[0].start_address + '.  End: ' + response.routes[0].legs[0].end_address) + '</p>'
+
       makeMarkerArray(walkMap, response, panorama))
 
 
@@ -80,8 +80,7 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
       strokeOpacity: 0.8,
       strokeWeight: 2})
     thisStepMarkerArray = stepArray.GetPointsAtDistance(markerSpacing)
-    console.log(i + ' step array:')
-    console.log(thisStepMarkerArray)
+
     # if i==routeData.steps.length-1 then thisStepInstructions = 'You have arrived!'
     thisStepInstructions = routeData.steps[i].instructions
     if thisStepMarkerArray.length>0
