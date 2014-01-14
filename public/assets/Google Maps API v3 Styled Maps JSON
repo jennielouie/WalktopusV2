@@ -1,0 +1,46 @@
+    Google Maps API v3 Styled Maps JSON
+
+[
+  {
+    "featureType": "landscape.natural",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#efeee4" }
+    ]
+  },{
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#f0652f" },
+      { "weight": 1.2 }
+    ]
+  },{
+    "featureType": "road.arterial",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#f0652f" }
+    ]
+  },{
+    "featureType": "road.local",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#689aca" }
+    ]
+  },{
+    "featureType": "water",
+    "stylers": [
+      { "color": "#464646" }
+    ]
+  },{
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#b8b4c1" }
+    ]
+  },{
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      { "weight": 3.7 }
+    ]
+  }
+]
