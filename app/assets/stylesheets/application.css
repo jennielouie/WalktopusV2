@@ -30,39 +30,38 @@ h1 {
 }
 
 #map-canvas {
-  height: 32%
+  height: 45%
 }
 
 #pano {
-  height: 32%;
+  height: 45%;
 }
 
-#route_box {
+/*#route_box {
   height: 15%;
   background-color:
   white; opacity: 0.9;
   overflow:scroll
 }
-
+*/
 #directions_box {
-  height: 15%;
-  font-size: 14px;
+  height: 8%;
+  font-size: 10px;
   background-color: white;
   opacity: 0.9;
   overflow:scroll
 }
 
-#walk_show {
-  /*height: 5%;*/
+/*#walk_show {
+
   margin-left:auto;
-  /*font-size: 10px;*/
+
   margin-right:auto;
   text-align: center;
-/*  margin-bottom: 5px;
-  padding-bottom: 5px;*/
+
   background-color: white;
   opacity: 0.9;
-}
+}*/
 
 #walk_summary {
   height: 80%;
