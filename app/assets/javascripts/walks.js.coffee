@@ -2,9 +2,9 @@
 directionsService = new google.maps.DirectionsService()
 streetView = new google.maps.StreetViewService()
 bearings = []
-geoStreet = []
 panorama = 0
 walkMap = 0
+markerHandles = []
 
 # Initializes map and displays, then calls mapRoute function
 initialize = ()->
@@ -61,7 +61,6 @@ mapRoute = (walkMap, directionsDisplay, panorama)->
       directionsDisplay.setDirections(response)
       # $('#walk_show').empty()
       # $('#walk_show').append('<p>Start (star): ' + response.routes[0].legs[0].start_address + '.  End: ' + response.routes[0].legs[0].end_address + '</p>')
-
       makeMarkerArray(walkMap, response, panorama))
 
 
@@ -69,10 +68,6 @@ mapRoute = (walkMap, directionsDisplay, panorama)->
 
 makeMarkerArray = (walkMap, directionResult, panorama)->
   routeData = directionResult.routes[0].legs[0]
-  console.log("directionResult: ")
-  console.log(directionResult)
-  console.log("routeData: ")
-  console.log(routeData)
   markerArray = []
   instructionsArray = []
 
@@ -92,8 +87,6 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
       strokeWeight: 2})
     thisStepMarkerArray = stepArray.GetPointsAtDistance(markerSpacing)
     thisStepInstructions = routeData.steps[i].instructions
-    console.log("thisStepMarkerArray " + i)
-    console.log(thisStepMarkerArray)
 
     # The following pushes marker locations and instructions for given step concurrently into their respective, all-steps arrays.
 
@@ -134,14 +127,13 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
         icon: octopus
       })
     marker.myIndex = i
-    markerHandles.push(marker);
+    markerHandles.push(marker)
     if i < markerArray.length-2
       thisLatLng = markerArray[i]
       nextLatLng = markerArray[i+1]
       bearings[i] = getBearing(thisLatLng.lat(), thisLatLng.lng(), nextLatLng.lat(), nextLatLng.lng())
     # If last marker, set bearing in same direction as penultimate marker
     else bearings[i] = bearings[i-1]
-
 
 
 # Adds event listener for click on marker; it triggers streetview for that marker, in the correct POV
@@ -156,6 +148,19 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
       $('#directions_box').empty()
       $('#directions_box').append('<h6 class="redText">' + instructionsArray[this.myIndex] + '</h6>')
 
+  setFirstView(panorama, markerArray, bearings, markerHandles, instructionsArray)
+
+# Initialize the streetview:  show streetview at first marker, and corresponding directions, and change map icon to indicate starting position
+setFirstView = (panorama, markerArray, bearings, markerHandles,  instructionsArray)->
+  panorama.setPosition(markerArray[0].position)
+  console.log('bearings: ')
+  console.log(bearings)
+  panorama.setPov({ heading: bearings[0], pitch: 0})
+  panorama.setVisible(true)
+  # markerHandles[0].setIcon(chicken)
+  lastSelectedMarker = markerHandles[0]
+  $('#directions_box').empty()
+  $('#directions_box').append('<h6 class="redText">' + instructionsArray[0] + '</h6>')
 # Initially the map should center on starting marker and zoom to show next 4 markers.  Zoom level can stay set at that point.
 
 # Add event listener for click on "Next view" button; this will change streetview to the following view, move the marker icon to the corresponding next marker, and pan the map to center on the marker.  If on the last marker, will move to the first marker
