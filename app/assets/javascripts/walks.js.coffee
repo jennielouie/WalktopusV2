@@ -153,14 +153,13 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
 # Initialize the streetview:  show streetview at first marker, and corresponding directions, and change map icon to indicate starting position
 setFirstView = (panorama, markerArray, bearings, markerHandles,  instructionsArray)->
   panorama.setPosition(markerArray[0].position)
-  console.log('bearings: ')
-  console.log(bearings)
   panorama.setPov({ heading: bearings[0], pitch: 0})
   panorama.setVisible(true)
   # markerHandles[0].setIcon(chicken)
   lastSelectedMarker = markerHandles[0]
   $('#directions_box').empty()
   $('#directions_box').append('<h6 class="redText">' + instructionsArray[0] + '</h6>')
+
 # Initially the map should center on starting marker and zoom to show next 4 markers.  Zoom level can stay set at that point.
 
 # Add event listener for click on "Next view" button; this will change streetview to the following view, move the marker icon to the corresponding next marker, and pan the map to center on the marker.  If on the last marker, will move to the first marker
@@ -190,5 +189,11 @@ google.maps.event.addDomListener window, "resize", (event) ->
   google.maps.event.trigger(walkMap, "resize")
   google.maps.event.trigger(panorama, "resize")
   walkMap.setCenter(center)
+
+
+$('#nextStepButton').on 'click', ->
+  alert "View next marker"
+
+
 
 
