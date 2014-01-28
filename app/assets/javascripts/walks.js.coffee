@@ -5,6 +5,8 @@ bearings = []
 panorama = 0
 walkMap = 0
 markerHandles = []
+lastSelectedMarker = []
+currentIndex = 0
 
 # Initializes map and displays, then calls mapRoute function
 initialize = ()->
@@ -63,14 +65,12 @@ mapRoute = (walkMap, directionsDisplay, panorama)->
       # $('#walk_show').append('<p>Start (star): ' + response.routes[0].legs[0].start_address + '.  End: ' + response.routes[0].legs[0].end_address + '</p>')
       makeMarkerArray(walkMap, response, panorama))
 
-
 # This function creates parallel arrays for marker coordinates and marker instructions for each step along the route, then pushes these to route arrays (containing data for all steps).
 
 makeMarkerArray = (walkMap, directionResult, panorama)->
   routeData = directionResult.routes[0].legs[0]
   markerArray = []
   instructionsArray = []
-
 
   # For each step, determine marker locations along polyline at specified intervals.
   # Loop for each step to create array of points
@@ -107,6 +107,7 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
   plotMarkers(walkMap, markerArray, instructionsArray, panorama)
 
 
+
 # Create marker objects and set bearing at each marker, which will be used to set streetview POV.  Save these marker objects in array markerHandles.  If the last marker, use same bearing as the previous marker.
 plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
   octopus = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
@@ -134,22 +135,56 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
       bearings[i] = getBearing(thisLatLng.lat(), thisLatLng.lng(), nextLatLng.lat(), nextLatLng.lng())
     # If last marker, set bearing in same direction as penultimate marker
     else bearings[i] = bearings[i-1]
+  makeButtons(markerArray, markerHandles, instructionsArray, lastSelectedMarker, starfish, octopus, chicken, walkMap)
 
+# # Adds event listener for click on marker; it triggers streetview for that marker, in the correct POV
+#     google.maps.event.addListener marker, 'click', (event) ->
+#       streetView.getPanoramaByLocation(event.latLng, 50, showStreetView)
+#       if lastSelectedMarker.myIndex == 0 then lastSelectedMarker.setIcon(starfish)
+#       else lastSelectedMarker.setIcon(octopus)
+#       panorama.setPov({ heading: bearings[this.myIndex], pitch: 0})
+#       panorama.setVisible(true)
+#       this.setIcon(chicken)
+#       lastSelectedMarker = this
+#       $('#directions_box').empty()
+#       $('#directions_box').append('<h6 class="redText">' + instructionsArray[this.myIndex] + '</h6>')
 
-# Adds event listener for click on marker; it triggers streetview for that marker, in the correct POV
-    google.maps.event.addListener marker, 'click', (event) ->
-      streetView.getPanoramaByLocation(event.latLng, 50, showStreetView)
-      if lastSelectedMarker.myIndex == 0 then lastSelectedMarker.setIcon(starfish)
-      else lastSelectedMarker.setIcon(octopus)
-      panorama.setPov({ heading: bearings[this.myIndex], pitch: 0})
-      panorama.setVisible(true)
-      this.setIcon(chicken)
-      lastSelectedMarker = this
-      $('#directions_box').empty()
-      $('#directions_box').append('<h6 class="redText">' + instructionsArray[this.myIndex] + '</h6>')
-
+# ------------------------
+makeButtons = (markerArray, markerHandles, instructionsArray, lastSelectedMarker, starfish, octopus, chicken, walkMap) ->
   $('#nextStepButton').click ->
-    alert('hi')
+    if lastSelectedMarker.myIndex == markerHandles.length-1 then currentIndex = 0
+    else currentIndex = lastSelectedMarker.myIndex + 1
+    console.log 'nextlastIndex' + lastSelectedMarker.myIndex
+    console.log 'nextcurrent index' + currentIndex
+    changeSV(markerArray, markerHandles, instructionsArray, currentIndex, lastSelectedMarker, starfish, octopus, chicken, walkMap)
+
+  $('#prevStepButton').click ->
+    if lastSelectedMarker.myIndex == 0 then currentIndex = markerHandles.length-1
+    else currentIndex = lastSelectedMarker.myIndex - 1
+    console.log 'prevlastIndex' + lastSelectedMarker.myIndex
+    console.log 'current index' + currentIndex
+    changeSV(markerArray, markerHandles, instructionsArray, currentIndex, lastSelectedMarker, starfish, octopus, chicken, walkMap)
+
+changeSV = (markerArray, markerHandles, instructionsArray, currentIndex, lastSelectedMarker, starfish, octopus, chicken, walkMap)->
+  if lastSelectedMarker == markerHandles[0] then lastSelectedMarker.setIcon(starfish)
+  else lastSelectedMarker.setIcon(octopus)
+  panoOptions = {
+    position: markerArray[currentIndex]
+  }
+  panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoOptions)
+  panorama.setPov({ heading: bearings[currentIndex], pitch: 0})
+  walkMap.setHeading(bearings[currentIndex])
+  panorama.setVisible(true)
+  currentMarker = markerHandles[currentIndex]
+  currentMarker.setIcon(chicken)
+  # Define lastSelectedMarker for next button click
+  lastSelectedMarker = currentMarker
+  console.log 'now lastIndex' + lastSelectedMarker.myIndex
+  console.log 'now current index' + currentIndex
+  $('#directions_box').empty()
+  $('#directions_box').append('<h6>Directions:</h6></br><h6>' + instructionsArray[currentIndex] + '</h6>')
+
+# --------------------------------------------------------
 
 #   setFirstView(panorama, markerArray, bearings, markerHandles, instructionsArray)
 
@@ -165,10 +200,7 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
 
 # Initially the map should center on starting marker and zoom to show next 4 markers.  Zoom level can stay set at that point.
 
-# Add event listener for click on "Next view" button; this will change streetview to the following view, move the marker icon to the corresponding next marker, and pan the map to center on the marker.  If on the last marker, will move to the first marker
-
-# Add event listener for click on "Previous view" button; this will change streetview to the previous view, move the marker icon to the corresponding previous marker, and pan the map to center on the marker.  If on the first marker, will move to the last marker
-
+# -----------------------------------------------------------
 showStreetView = (data, status)->
   if status == google.maps.StreetViewStatus.OK then panorama.setPano(data.location.pano) else alert 'Sorry, no views are currently available for this location.'
 
@@ -192,10 +224,3 @@ google.maps.event.addDomListener window, "resize", (event) ->
   google.maps.event.trigger(walkMap, "resize")
   google.maps.event.trigger(panorama, "resize")
   walkMap.setCenter(center)
-
-
-
-# test_func = -> alert 'it works!'
-# window.onload = -> $('#nextStepButton').click test_func
-
-
