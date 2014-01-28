@@ -1,2 +1,3 @@
-Use this README file to introduce your application and point to useful places in the API for learning more.
-Run "rake doc:app" to generate API documentation for your models, controllers, helpers, and libraries.
+Walktopus Version 2
+
+This version features a UI optimized for mobile devices.  It uses Foundation 5 as the frontend framework, and employs coffeescript for js.

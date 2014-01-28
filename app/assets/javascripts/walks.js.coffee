@@ -45,11 +45,11 @@ initialize = ()->
   walkMap.setOptions({styles: walkMapStyles})
   panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"))
   directionsDisplay.setMap(walkMap)
-  # directionsDisplay.setPanel(document.getElementById('route_box'))
+  directionsDisplay.setPanel(document.getElementById("full_directions_modal"))
   mapRoute(walkMap, directionsDisplay, panorama)
 
 
-# mapRoute is called by function initialize, makes request for directions, then calls makeMarkerArray function to add markers
+# mapRoute is called by function initialize, makes request for directions, then calls makeMarkerArray function to create markers
 mapRoute = (walkMap, directionsDisplay, panorama)->
   request = {
     origin: walk_start,
@@ -148,17 +148,20 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
       $('#directions_box').empty()
       $('#directions_box').append('<h6 class="redText">' + instructionsArray[this.myIndex] + '</h6>')
 
-  setFirstView(panorama, markerArray, bearings, markerHandles, instructionsArray)
+  $('#nextStepButton').click ->
+    alert('hi')
 
-# Initialize the streetview:  show streetview at first marker, and corresponding directions, and change map icon to indicate starting position
-setFirstView = (panorama, markerArray, bearings, markerHandles,  instructionsArray)->
-  panorama.setPosition(markerArray[0].position)
-  panorama.setPov({ heading: bearings[0], pitch: 0})
-  panorama.setVisible(true)
-  # markerHandles[0].setIcon(chicken)
-  lastSelectedMarker = markerHandles[0]
-  $('#directions_box').empty()
-  $('#directions_box').append('<h6 class="redText">' + instructionsArray[0] + '</h6>')
+#   setFirstView(panorama, markerArray, bearings, markerHandles, instructionsArray)
+
+# # Initialize the streetview:  show streetview at first marker, and corresponding directions, and change map icon to indicate starting position
+# setFirstView = (panorama, markerArray, bearings, markerHandles,  instructionsArray)->
+#   panorama.setPosition(markerArray[0].position)
+#   panorama.setPov({ heading: bearings[0], pitch: 0})
+#   panorama.setVisible(true)
+#   # markerHandles[0].setIcon(chicken)
+#   lastSelectedMarker = markerHandles[0]
+#   $('#directions_box').empty()
+#   $('#directions_box').append('<h6 class="redText">' + instructionsArray[0] + '</h6>')
 
 # Initially the map should center on starting marker and zoom to show next 4 markers.  Zoom level can stay set at that point.
 
@@ -191,9 +194,8 @@ google.maps.event.addDomListener window, "resize", (event) ->
   walkMap.setCenter(center)
 
 
-$('#nextStepButton').on 'click', ->
-  alert "View next marker"
 
-
+# test_func = -> alert 'it works!'
+# window.onload = -> $('#nextStepButton').click test_func
 
 

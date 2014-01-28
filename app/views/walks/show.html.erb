@@ -9,8 +9,11 @@ var walk_end="<%=@walk.end%>";
       <h1><a href="/walks/new">Walktopus</a></h1>
     </li>
   </ul>
-
   <section class="top-bar-section">
+  <ul class="Left">
+    <a href="#" data-reveal-id="myModal" data-reveal>View Complete Directions</a>
+  </ul>
+
     <!-- Right Nav Section -->
     <ul class="right">
       <li class="has-dropdown">
@@ -40,3 +43,8 @@ var walk_end="<%=@walk.end%>";
   <button type="button" id="nextStepButton">Next View</button>
 
 <!-- </div> -->
+
+<div id="myModal" class="reveal-modal" data-reveal>
+   <div id="full_directions_modal"></div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>

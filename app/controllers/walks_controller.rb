@@ -17,4 +17,8 @@ class WalksController < ApplicationController
     @walk = Walk.find(params[:id])
   end
 
+  def fullmap
+    @walk = Walk.find(params[:id])
+  end
+
 end #class
