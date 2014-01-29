@@ -1,12 +1,31 @@
 # Global Variables
+#vars in initialize
+directionsDisplay = null
+panorama = null
+walkMap = null
+#vars used in mapRoute
 directionsService = new google.maps.DirectionsService()
+response = null
+#var used in makeMarkerArray
+instructionsArray = []
+markerArray = []
+markerSpacing = 200
+#vars used in plotMarkers
 streetView = new google.maps.StreetViewService()
 bearings = []
-panorama = 0
-walkMap = 0
+octopus = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
+chicken = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-2/32/polenta-icon.png'
+starfish = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/48/Pico-icon.png'
 markerHandles = []
 lastSelectedMarker = []
-currentIndex = 0
+#vars used in makeButtons
+currentIndex = null
+currentMarker = []
+#vars used in changeSV
+#vars used in getBearing
+
+
+
 
 # Initializes map and displays, then calls mapRoute function
 initialize = ()->
@@ -69,8 +88,8 @@ mapRoute = (walkMap, directionsDisplay, panorama)->
 
 makeMarkerArray = (walkMap, directionResult, panorama)->
   routeData = directionResult.routes[0].legs[0]
-  markerArray = []
-  instructionsArray = []
+  # markerArray = []
+  # instructionsArray = []
 
   # For each step, determine marker locations along polyline at specified intervals.
   # Loop for each step to create array of points
@@ -79,7 +98,7 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
     # create marker locations between start and end of this step (could be empty array if pathw < markerSpacing)
     # thisStepMarkerArray does NOT include start and end of the step
     pathw = routeData.steps[i].path
-    markerSpacing = 200
+    # markerSpacing = 200
     stepArray = new google.maps.Polyline({
       path: pathw,
       strokeColor: "#464646",
@@ -110,9 +129,9 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
 
 # Create marker objects and set bearing at each marker, which will be used to set streetview POV.  Save these marker objects in array markerHandles.  If the last marker, use same bearing as the previous marker.
 plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
-  octopus = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
-  chicken = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-2/32/polenta-icon.png'
-  starfish = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/48/Pico-icon.png'
+  # octopus = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
+  # chicken = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-2/32/polenta-icon.png'
+  # starfish = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/48/Pico-icon.png'
   for i in [0..markerArray.length-1]
     if i==0
       marker = new google.maps.Marker({
