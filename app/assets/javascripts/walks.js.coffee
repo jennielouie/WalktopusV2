@@ -63,7 +63,6 @@ initialize = ->
   panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"))
   directionsDisplay.setMap(walkMap)
   directionsDisplay.setPanel(document.getElementById("full_directions_modal"))
-  alert 'added full directions'
   mapRoute()
 
 
@@ -77,17 +76,12 @@ mapRoute = ->
   directionsService.route request, (response, status) ->
     if status == google.maps.DirectionsStatus.OK
       directionsDisplay.setDirections(response)
-      # $('#walk_show').empty()
-      # $('#walk_show').append('<p>Start (star): ' + response.routes[0].legs[0].start_address + '.  End: ' + response.routes[0].legs[0].end_address + '</p>')
       makeMarkerArray(response)
 
 # This function creates parallel arrays for marker coordinates and marker instructions for each step along the route, then pushes these to route arrays (containing data for all steps).
 
 makeMarkerArray = (response)->
   routeData = response.routes[0].legs[0]
-  # markerArray = []
-  # instructionsArray = []
-
   # For each step, determine marker locations along polyline at specified intervals.
   # Loop for each step to create array of points
   for i in [0..(routeData.steps.length-1)]
@@ -95,7 +89,6 @@ makeMarkerArray = (response)->
     # create marker locations between start and end of this step (could be empty array if pathw < markerSpacing)
     # thisStepMarkerArray does NOT include start and end of the step
     pathw = routeData.steps[i].path
-    # markerSpacing = 200
     stepArray = new google.maps.Polyline({
       path: pathw,
       strokeColor: "#464646",
@@ -120,16 +113,12 @@ makeMarkerArray = (response)->
   # After looping through all steps, need to enter end location for route, because we are not pushing end location for last step
   markerArray.push(routeData.end_location)
   instructionsArray.push('Arrive at ' + routeData.end_address)
-  alert 'makeMarkerArray done'
   plotMarkers()
 
 
 
 # Create marker objects and set bearing at each marker, which will be used to set streetview POV.  Save these marker objects in array markerHandles.  If the last marker, use same bearing as the previous marker.
 plotMarkers = ->
-  # octopus = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
-  # chicken = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-2/32/polenta-icon.png'
-  # starfish = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/48/Pico-icon.png'
   for i in [0..markerArray.length-1]
     if i==0
       marker = new google.maps.Marker({
@@ -152,9 +141,9 @@ plotMarkers = ->
       bearings[i] = getBearing(thisLatLng.lat(), thisLatLng.lng(), nextLatLng.lat(), nextLatLng.lng())
     # If last marker, set bearing in same direction as penultimate marker
     else bearings[i] = bearings[i-1]
+  setFirstView()
   makeButtonNext()
   makeButtonPrev()
-  alert 'plotMarkers done'
 
 # # Adds event listener for click on marker; it triggers streetview for that marker, in the correct POV
 #   google.maps.event.addListener marker, 'click', (event) ->
@@ -195,23 +184,25 @@ changeSV = ->
   currentMarker.setIcon(chicken)
   # Define lastSelectedMarker for next button click
   lastSelectedMarker = currentMarker
-  console.log 'changeSV current index' + currentIndex
   $('#directions_box').empty()
-  $('#directions_box').append('<h6>Directions:</h6></br><h6>' + instructionsArray[currentIndex] + '</h6>')
+  $('#directions_box').append('<h6>Directions: ' + instructionsArray[currentIndex] + '</h6>')
 
 # --------------------------------------------------------
 
-#   setFirstView(panorama, markerArray, bearings, markerHandles, instructionsArray)
 
-# # Initialize the streetview:  show streetview at first marker, and corresponding directions, and change map icon to indicate starting position
-# setFirstView = (panorama, markerArray, bearings, markerHandles,  instructionsArray)->
-#   panorama.setPosition(markerArray[0].position)
-#   panorama.setPov({ heading: bearings[0], pitch: 0})
-#   panorama.setVisible(true)
-#   # markerHandles[0].setIcon(chicken)
-#   lastSelectedMarker = markerHandles[0]
-#   $('#directions_box').empty()
-#   $('#directions_box').append('<h6 class="redText">' + instructionsArray[0] + '</h6>')
+
+# Initialize the streetview:  show streetview at first marker, and corresponding directions, and change map icon to indicate starting position
+setFirstView = ->
+  panoOptions = {
+    position: markerArray[0]
+  }
+  panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoOptions)
+  panorama.setPov({ heading: bearings[0], pitch: 0})
+  panorama.setVisible(true)
+  markerHandles[0].setIcon(chicken)
+  lastSelectedMarker = markerHandles[0]
+  $('#directions_box').empty()
+  $('#directions_box').append('<h6 class="redText">' + instructionsArray[0] + '</h6>')
 
 # Initially the map should center on starting marker and zoom to show next 4 markers.  Zoom level can stay set at that point.
 
@@ -239,4 +230,3 @@ google.maps.event.addDomListener window, "resize", (event) ->
   google.maps.event.trigger(walkMap, "resize")
   google.maps.event.trigger(panorama, "resize")
   walkMap.setCenter(center)
-  alert 'resized'
