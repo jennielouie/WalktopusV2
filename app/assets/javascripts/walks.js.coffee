@@ -21,14 +21,10 @@ lastSelectedMarker = []
 #vars used in makeButtons
 currentIndex = null
 currentMarker = []
-#vars used in changeSV
-#vars used in getBearing
-
-
 
 
 # Initializes map and displays, then calls mapRoute function
-initialize = ()->
+initialize = ->
   directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, polylineOptions: {strokeColor: '#464646'}})
   toronto = new google.maps.LatLng(43.652527, -79.381961)
   mapOptions = {
@@ -67,27 +63,28 @@ initialize = ()->
   panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"))
   directionsDisplay.setMap(walkMap)
   directionsDisplay.setPanel(document.getElementById("full_directions_modal"))
-  mapRoute(walkMap, directionsDisplay, panorama)
+  alert 'added full directions'
+  mapRoute()
 
 
 # mapRoute is called by function initialize, makes request for directions, then calls makeMarkerArray function to create markers
-mapRoute = (walkMap, directionsDisplay, panorama)->
+mapRoute = ->
   request = {
     origin: walk_start,
     destination: walk_end,
     travelMode: google.maps.DirectionsTravelMode.WALKING
   }
-  directionsService.route(request, (response, status) ->
+  directionsService.route request, (response, status) ->
     if status == google.maps.DirectionsStatus.OK
       directionsDisplay.setDirections(response)
       # $('#walk_show').empty()
       # $('#walk_show').append('<p>Start (star): ' + response.routes[0].legs[0].start_address + '.  End: ' + response.routes[0].legs[0].end_address + '</p>')
-      makeMarkerArray(walkMap, response, panorama))
+      makeMarkerArray(response)
 
 # This function creates parallel arrays for marker coordinates and marker instructions for each step along the route, then pushes these to route arrays (containing data for all steps).
 
-makeMarkerArray = (walkMap, directionResult, panorama)->
-  routeData = directionResult.routes[0].legs[0]
+makeMarkerArray = (response)->
+  routeData = response.routes[0].legs[0]
   # markerArray = []
   # instructionsArray = []
 
@@ -123,12 +120,13 @@ makeMarkerArray = (walkMap, directionResult, panorama)->
   # After looping through all steps, need to enter end location for route, because we are not pushing end location for last step
   markerArray.push(routeData.end_location)
   instructionsArray.push('Arrive at ' + routeData.end_address)
-  plotMarkers(walkMap, markerArray, instructionsArray, panorama)
+  alert 'makeMarkerArray done'
+  plotMarkers()
 
 
 
 # Create marker objects and set bearing at each marker, which will be used to set streetview POV.  Save these marker objects in array markerHandles.  If the last marker, use same bearing as the previous marker.
-plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
+plotMarkers = ->
   # octopus = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/32/Poulpo-icon.png'
   # chicken = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-2/32/polenta-icon.png'
   # starfish = 'http://icons.iconarchive.com/icons/charlotte-schmidt/zootetragonoides-4/48/Pico-icon.png'
@@ -154,37 +152,36 @@ plotMarkers = (walkMap, markerArray, instructionsArray, panorama)->
       bearings[i] = getBearing(thisLatLng.lat(), thisLatLng.lng(), nextLatLng.lat(), nextLatLng.lng())
     # If last marker, set bearing in same direction as penultimate marker
     else bearings[i] = bearings[i-1]
-  makeButtons(markerArray, markerHandles, instructionsArray, lastSelectedMarker, starfish, octopus, chicken, walkMap)
+  makeButtonNext()
+  makeButtonPrev()
+  alert 'plotMarkers done'
 
 # # Adds event listener for click on marker; it triggers streetview for that marker, in the correct POV
-#     google.maps.event.addListener marker, 'click', (event) ->
-#       streetView.getPanoramaByLocation(event.latLng, 50, showStreetView)
-#       if lastSelectedMarker.myIndex == 0 then lastSelectedMarker.setIcon(starfish)
-#       else lastSelectedMarker.setIcon(octopus)
-#       panorama.setPov({ heading: bearings[this.myIndex], pitch: 0})
-#       panorama.setVisible(true)
-#       this.setIcon(chicken)
-#       lastSelectedMarker = this
-#       $('#directions_box').empty()
-#       $('#directions_box').append('<h6 class="redText">' + instructionsArray[this.myIndex] + '</h6>')
+#   google.maps.event.addListener marker, 'click', (event) ->
+#     streetView.getPanoramaByLocation(event.latLng, 50, showStreetView)
+#     if lastSelectedMarker.myIndex == 0 then lastSelectedMarker.setIcon(starfish)
+#     else lastSelectedMarker.setIcon(octopus)
+#     panorama.setPov({ heading: bearings[this.myIndex], pitch: 0})
+#     panorama.setVisible(true)
+#     this.setIcon(chicken)
+#     lastSelectedMarker = this
+#     $('#directions_box').empty()
+#     $('#directions_box').append('<h6 class="redText">' + instructionsArray[this.myIndex] + '</h6>')
 
 # ------------------------
-makeButtons = (markerArray, markerHandles, instructionsArray, lastSelectedMarker, starfish, octopus, chicken, walkMap) ->
+makeButtonNext = ->
   $('#nextStepButton').click ->
     if lastSelectedMarker.myIndex == markerHandles.length-1 then currentIndex = 0
     else currentIndex = lastSelectedMarker.myIndex + 1
-    console.log 'nextlastIndex' + lastSelectedMarker.myIndex
-    console.log 'nextcurrent index' + currentIndex
-    changeSV(markerArray, markerHandles, instructionsArray, currentIndex, lastSelectedMarker, starfish, octopus, chicken, walkMap)
+    changeSV()
 
+makeButtonPrev = ->
   $('#prevStepButton').click ->
     if lastSelectedMarker.myIndex == 0 then currentIndex = markerHandles.length-1
     else currentIndex = lastSelectedMarker.myIndex - 1
-    console.log 'prevlastIndex' + lastSelectedMarker.myIndex
-    console.log 'current index' + currentIndex
-    changeSV(markerArray, markerHandles, instructionsArray, currentIndex, lastSelectedMarker, starfish, octopus, chicken, walkMap)
+    changeSV()
 
-changeSV = (markerArray, markerHandles, instructionsArray, currentIndex, lastSelectedMarker, starfish, octopus, chicken, walkMap)->
+changeSV = ->
   if lastSelectedMarker == markerHandles[0] then lastSelectedMarker.setIcon(starfish)
   else lastSelectedMarker.setIcon(octopus)
   panoOptions = {
@@ -198,8 +195,7 @@ changeSV = (markerArray, markerHandles, instructionsArray, currentIndex, lastSel
   currentMarker.setIcon(chicken)
   # Define lastSelectedMarker for next button click
   lastSelectedMarker = currentMarker
-  console.log 'now lastIndex' + lastSelectedMarker.myIndex
-  console.log 'now current index' + currentIndex
+  console.log 'changeSV current index' + currentIndex
   $('#directions_box').empty()
   $('#directions_box').append('<h6>Directions:</h6></br><h6>' + instructionsArray[currentIndex] + '</h6>')
 
@@ -243,3 +239,4 @@ google.maps.event.addDomListener window, "resize", (event) ->
   google.maps.event.trigger(walkMap, "resize")
   google.maps.event.trigger(panorama, "resize")
   walkMap.setCenter(center)
+  alert 'resized'
