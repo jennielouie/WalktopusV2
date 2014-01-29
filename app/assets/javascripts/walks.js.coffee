@@ -187,11 +187,7 @@ changeSV = ->
   $('#directions_box').empty()
   $('#directions_box').append('<h6>Directions: ' + instructionsArray[currentIndex] + '</h6>')
 
-# --------------------------------------------------------
 
-
-
-# Initialize the streetview:  show streetview at first marker, and corresponding directions, and change map icon to indicate starting position
 setFirstView = ->
   panoOptions = {
     position: markerArray[0]
@@ -204,9 +200,7 @@ setFirstView = ->
   $('#directions_box').empty()
   $('#directions_box').append('<h6 class="redText">' + instructionsArray[0] + '</h6>')
 
-# Initially the map should center on starting marker and zoom to show next 4 markers.  Zoom level can stay set at that point.
 
-# -----------------------------------------------------------
 showStreetView = (data, status)->
   if status == google.maps.StreetViewStatus.OK then panorama.setPano(data.location.pano) else alert 'Sorry, no views are currently available for this location.'
 
