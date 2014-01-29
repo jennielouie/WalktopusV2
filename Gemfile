@@ -5,12 +5,12 @@ gem 'pg'
 gem 'foundation-rails'
 gem 'jquery-rails'
 # To use ActiveModel has_secure_password
-gem 'bcrypt-ruby', '~> 3.0.0'
+# gem 'bcrypt-ruby', '~> 3.0.0'
 
 group :development, :test do
-  gem 'rspec-rails'
-  gem 'pry-rails'
-  gem 'shoulda-matchers'
+  # gem 'rspec-rails'
+  # gem 'pry-rails'
+  # gem 'shoulda-matchers'
 end
 
 # Gems used only for assets and not required

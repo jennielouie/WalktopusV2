@@ -33,5 +33,6 @@ WalktopusV2::Application.configure do
   config.assets.compress = false
 
   # Expands the lines which load the assets
-  config.assets.debug = true
+  # Changed from true to false for WalktopusV2 to prevent duplication of js compiling
+  config.assets.debug = false
 end
