@@ -30,11 +30,11 @@ h1 {
 }
 
 #map-canvas {
-  height: 41%
+  height: 35%
 }
 
 #pano {
-  height: 41%;
+  height: 35%;
 }
 
 #full_directions_modal {
@@ -75,3 +75,4 @@ h1 {
 .redText {
 color: orangered;
 }
+
